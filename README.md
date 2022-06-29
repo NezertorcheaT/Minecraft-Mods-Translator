@@ -1,6 +1,6 @@
 # Minecraft-Mods-Translator
 
- Welcome to Mods Translator!
+Welcome to Mods Translator!
 This is a program for translating Minecraft mods written by NezertorcheaT.
 To start working, select the original file with the .lang extension.
 Next, enter your language in the "Lang to" field.
