@@ -1,5 +1,8 @@
 # Minecraft-Mods-Translator
 
+https://youtu.be/GOVTQjaLy9E
+Tutorial
+
 Welcome to Mods Translator!
 This is a program for translating Minecraft mods written by NezertorcheaT.
 To start working, select the original file with the .lang extension.
@@ -17,6 +20,9 @@ To find the original localization file, unpack the mod as an archive and navigat
 There will be files with the .lang extension.
 Filename for English: "en_US.lang".
 THIS ALL WORKS ONLY ON VERSION 1.12.2!!!
+
+https://youtu.be/GOVTQjaLy9E
+Туториал
 
 Добро пожаловать в Mods Translator! 
 Это программа для перевода модов Minecraft, написанная NezertorcheaT.
