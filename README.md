@@ -18,8 +18,8 @@ At the moment, saving is not working well, so you can click the "Add all text to
 This is the entire functionality of the program for now, but it will be expanded soon.
 To find the original localization file, unpack the mod as an archive and navigate to the "assets\<some folder>\lang" path.
 There will be files with the .lang extension.
-Filename for English: "en_US.lang".
-THIS ALL WORKS ONLY ON VERSION 1.12.2!!!
+Filename for English: "en_US.lang".  
+Внимание! Теперь программа работает со ВСЕМИ версиями Minecraft!
 
 https://youtu.be/GOVTQjaLy9E
 Туториал
@@ -39,5 +39,5 @@ https://youtu.be/GOVTQjaLy9E
 Это пока весь функционал программы, но в скором времени он будет расширен.
 Чтобы найти оригинал файла локализации следует распаковать мод как архив и перейти по пути "assets\<some folder>\lang". 
 Там будут файлы с расширением .lang. 
-Имя файла для английского: "en_US.lang".
-ЭТО ВСЁ РАБОТАЕТ ТОЛЬКО НА ВЕРСИИ 1.12.2!!!
+Имя файла для английского: "en_US.lang".  
+Attention! Now the program works with ALL versions of Minecraft!
