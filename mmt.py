@@ -49,12 +49,20 @@ def print_array(a):
 
 def save():
     update_all()
-
-    file = f'# Translated with Mods Translator\n'
-    for i in range(len(strings_save)):
-        file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
-    new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".lang",
-                             filetypes=[("Lang files", "*.lang"), ("Json files", "*.json"), ("All files", "*.*")])
+    if not isJson:
+        file = f'# Translated with Mods Translator\n'
+        for i in range(len(strings_save)):
+            file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
+        new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".lang",
+                                 filetypes=[("Lang files", "*.lang")])
+    else:
+        file = ''
+        d = {}
+        for i in strings_save:
+            d.update({i[0]: i[1]})
+        file = json.dumps(d, indent=2)
+        new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".json",
+                                 filetypes=[("Json files", "*.json")])
     if new_file:
         new_file.write(file)
         new_file.close()
@@ -62,13 +70,22 @@ def save():
 
 def save_to_clipboard():
     update_all()
-    file = f'# Translated with Mods Translator\n'
-    for i in range(len(strings_save)):
-        file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
+
+    if not isJson:
+        file = f'# Translated with Mods Translator\n'
+        for i in range(len(strings_save)):
+            file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
+    else:
+        file = ''
+        d = {}
+        for i in strings_save:
+            d.update({i[0]: i[1]})
+        file = json.dumps(d, indent=2)
     win.clipboard_append(file)
 
 
 def op():
+    global isJson
     isJson = False
     MsgBox = messagebox.askquestion(message='Yes=.json\nNo=.lang',
                                     icon='error', title="Select file type")
