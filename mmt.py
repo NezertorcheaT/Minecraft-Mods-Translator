@@ -1,3 +1,4 @@
+import json
 import re
 import tkinter as tk
 from tkinter import filedialog
@@ -6,40 +7,6 @@ from tkinter.filedialog import asksaveasfile
 
 import googletrans
 from googletrans import Translator
-
-print(
-    """
-        Welcome to Mods Translator!
-        This is a program for translating Minecraft mods written by NezertorcheaT.
-        To start working, select the original file with the .lang extension.
-        Next, enter your language in the "Lang to" field.
-        "Index" is the number of the line being edited.
-        By entering a value in the "Input Index" field and pressing the "Set Index" button, you will instantly jump to the desired line.
-        The button located under the translation input field is responsible for saving the data in a separate cell.
-        It is this cell that will subsequently be saved to a separate file.
-        Click this button every time you finish translating, otherwise nothing will be saved.
-        You can automatically use Google Translate by clicking the "Try Google Translate" button.
-        Finally you can save the translation file and send it to the mod creator by clicking the "Save" button.
-        At the moment, this is the entire functionality of the program, but it will be expanded soon.
-        
-        __
-        
-        Добро пожаловать в Mods Translator!
-        Это программа для перевода модов Minecraft, написанная NezertorcheaT.
-        Для начала работы выберите исходный файл с расширением .lang.
-        Затем введите свой язык в поле "Lang to".
-        "Index" — это номер редактируемой строки.
-        Введя значение в поле "Input Index" и нажав кнопку "Set Index", вы мгновенно перейдёте на нужную строку.
-        Кнопка находящаяся под полем ввода перевода отвечает за сохранение данных в отдельную ячейку.
-        Именно эта ячейка в последующем будет сохранена в отдельный файл.
-        Нажимайте эту кнопку всякий раз, когда закончите переводить, иначе ничего не сохранится.
-        Вы можете автоматически использовать Google Translate, нажав кнопку "Try Google Translate".
-        Наконец, вы можете сохранить файл перевода и отправить его создателю мода, нажав кнопку "Save".
-        На данный момент это весь функционал программы, но в скором времени он будет расширен.
-    """
-)
-w = 16
-h = 9
 
 
 def clamp(n, smallest, largest): return max(smallest, min(n, largest))
@@ -86,8 +53,8 @@ def save():
     file = f'# Translated with Mods Translator\n'
     for i in range(len(strings_save)):
         file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
-    new_file = asksaveasfile(title="Save mod .lang file", defaultextension=".lang",
-                             filetypes=(("Text files", "*.lang"),))
+    new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".lang",
+                             filetypes=[("Lang files", "*.lang"), ("Json files", "*.json"), ("All files", "*.*")])
     if new_file:
         new_file.write(file)
         new_file.close()
@@ -102,6 +69,13 @@ def save_to_clipboard():
 
 
 def op():
+    isJson = False
+    MsgBox = messagebox.askquestion(message='Yes=.json\nNo=.lang',
+                                    icon='error', title="Select file type")
+    if MsgBox == 'yes':
+        isJson = True
+    else:
+        isJson = False
     global index_tr
     global f
     global ff
@@ -109,17 +83,26 @@ def op():
     global strings
     global strings_save
     try:
-        f = open(filedialog.askopenfilename(initialdir="/",
-                                            title="Select a mod .lang file",
-                                            filetypes=(("Text files",
-                                                        "*.lang*"),
-                                                       ("all files",
-                                                        "*.*"))), 'r')
+        if not isJson:
+            f = open(filedialog.askopenfilename(initialdir="/",
+                                                title="Select a mod .lang file",
+                                                filetypes=(("Text files",
+                                                            "*.lang*"),
+                                                           ("all files",
+                                                            "*.*"))), 'r')
+        else:
+            f = open(filedialog.askopenfilename(initialdir="/",
+                                                title="Select a mod .json file",
+                                                filetypes=(("Text files",
+                                                            "*.json*"),
+                                                           ("all files",
+                                                            "*.*"))), 'r')
     except:
         MsgBox = messagebox.askquestion(message='A file selection error has occurred.\nExit or try again?',
                                         icon='error', title="File Error")
         if MsgBox == 'yes':
             win.destroy()
+            raise RuntimeError
         else:
             op()
             return
@@ -129,30 +112,40 @@ def op():
     strings_save = []
     ff = f.read()
     f.close()
-    ff = re.sub(r"#.*", "", ff, flags=re.M)
-    ff = re.sub(r"^[^\w\d]", "", ff, flags=re.M)
-    result = re.findall(r".+[=]|.+$", ff, flags=re.M)
-    k = 0
-    for i in result:
-        k += 1
-        if k % 2 == 0:
-            a = result[k - 2]
-            a = re.sub(r"=$", "", a, flags=re.M)
-            strings.append([a, i])
-            strings_prew.append([a, i])
-            strings_save.append([a, i])
+    if not isJson:
+        ff = re.sub(r"#.*", "", ff, flags=re.M)
+        ff = re.sub(r"^[^\w\d]", "", ff, flags=re.M)
+        result = re.findall(r".+[=]|.+$", ff, flags=re.M)
+        k = 0
+        for i in result:
+            k += 1
+            if k % 2 == 0:
+                a = result[k - 2]
+                a = re.sub(r"=$", "", a, flags=re.M)
+                strings.append([a, i])
+                strings_prew.append([a, i])
+                strings_save.append([a, i])
+    else:
+        result = json.loads(ff)
+        for i in result:
+            s = [i, result[i]]
+            strings.append(s)
+            strings_prew.append(s)
+            strings_save.append(s)
 
 
 index_tr = 0
 win = tk.Tk()
-w = win.winfo_screenwidth()
-h = win.winfo_screenheight()
 # photo = tk.PhotoImage(file=r'D:\BeckUP\Backgrounds\YouTube\ikon5 - копия.png')
+w = 640
+h = 480
 win.geometry(f"{w}x{h}")
 # win.iconphoto(False, photo)
-win.title("Mods Translator")
+win.title("Minecraft Mods Translator")
 win.config(bg='#383838')
-win.resizable(False, False)
+
+
+# win.resizable(False, False)
 
 
 # print_array(strings)
@@ -218,10 +211,10 @@ def clear():
 
 
 make_menu(win)
-canvas = tk.Canvas(win, height=h, width=w)
-canvas.pack()
+canvas = tk.Canvas(win, height=win.winfo_height(), width=win.winfo_width())
+canvas.pack(fill="both")
 frame = tk.Frame(canvas, bg='#383838')
-frame.place(relheight=1, relwidth=1)
+frame.pack(fill="both")
 
 op()
 
