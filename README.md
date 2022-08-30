@@ -5,6 +5,7 @@ The program is written in Python 3.9.
 Libraries used:  
 	re  
 	json  
+	codecs  
 	tkinter  
 	googletrans (pip command: pip install googletrans==3.1.0a0)  
 
@@ -13,5 +14,6 @@ Libraries used:
 Используемые библиотеки:  
 	re  
 	json  
+	codecs  
 	tkinter  
 	googletrans (особой версии, команда пип: pip install googletrans==3.1.0a0)
