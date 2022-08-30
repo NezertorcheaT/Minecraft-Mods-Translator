@@ -1,10 +1,11 @@
+import codecs
 import json
 import re
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfilename
 from tkinter.font import *
 
 import googletrans
@@ -34,24 +35,30 @@ def translt(text, lng, ee):
 
 
 def save():
-    # update_all()
-    if not isJson:
-        file = u'# Translated with Mods Translator\n'
+    isJsonp = messagebox.askyesno(message='Yes=.json\nNo=.lang',
+                                  icon='error', title="Select file type")
+    if not isJsonp:
+        file = '# Translated with Mods Translator\n'
         for i in range(len(strings_save)):
             file += strings_save[i][0] + u"=" + strings_save[i][1] + '\n'
-        new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".lang",
-                                 filetypes=[("Lang files", "*.lang")])
+        new_file = asksaveasfilename(title="Save mod .lang\.json file", defaultextension=".lang",
+                                     filetypes=[("Lang files", "*.lang")])
     else:
-        file = u''
+        file = ''
         d = {}
+        d.update({"_comment": 'Translated with Mods Translator'})
         for i in strings_save:
             d.update({i[0]: i[1]})
         file = json.dumps(d, indent=2)
-        new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".json",
-                                 filetypes=[("Json files", "*.json")])
+        new_file = asksaveasfilename(title="Save mod .lang\.json file", defaultextension=".json",
+                                     filetypes=[("Json files", "*.json")])
     if new_file:
-        new_file.write(file.encode('utf8').decode("unicode_escape"))
-        new_file.close()
+        if isJsonp:
+            with codecs.open(new_file, "w", "utf-8-sig") as temp:
+                temp.write(file.encode('utf8').decode("unicode_escape"))
+        else:
+            with open(new_file, 'w', encoding='utf-8') as s:
+                s.write(file)
 
 
 def save_to_clipboard():

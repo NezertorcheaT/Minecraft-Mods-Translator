@@ -81,6 +81,7 @@ def save_to_clipboard():
         for i in strings_save:
             d.update({i[0]: i[1]})
         file = json.dumps(d, indent=2)
+    win.clipboard_clear()
     win.clipboard_append(file)
 
 
@@ -165,7 +166,6 @@ win.config(bg='#383838')
 # win.resizable(False, False)
 
 
-# print_array(strings)
 def make_menu(w):
     global the_menu
     the_menu = tk.Menu(w, tearoff=0)
@@ -276,7 +276,7 @@ b7 = tk.Button(frame,
                justify=tk.LEFT,
                wraplength=max(w - 200, 200)
                )
-strings[index_tr][1] = e.get()
+#strings[index_tr][1] = e.get()
 e.delete(0, tk.END)
 e.insert(0, strings[index_tr][1])
 
@@ -297,7 +297,7 @@ b6.grid(row=5, column=0, stick="we", columnspan=6)
 b3.grid(row=1, column=1, stick="we")
 b.grid(row=1, column=2, stick="we")
 b2.grid(row=1, column=3, stick="we")
-b7.grid(row=6, column=0, stick="we")
+b7.grid(row=1, column=4, stick="we")
 
 update_all()
 
