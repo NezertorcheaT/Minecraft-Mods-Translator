@@ -6,7 +6,7 @@ Libraries used:
 	re  
 	json  
 	tkinter  
-	googletrans (pip command: pip install git+https://github.com/BoseCorp/py-googletrans)  
+	googletrans (pip command: pip install googletrans==3.1.0a0)  
 
 Исходный код программы Minecraft Mods Translator  
 Программа написана на Python 3.9.  
@@ -14,4 +14,4 @@ Libraries used:
 	re  
 	json  
 	tkinter  
-	googletrans (особой версии, команда пип: pip install git+https://github.com/BoseCorp/py-googletrans)
+	googletrans (особой версии, команда пип: pip install googletrans==3.1.0a0)
