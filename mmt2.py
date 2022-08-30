@@ -5,6 +5,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfile
+from tkinter.font import *
 
 import googletrans
 from googletrans import Translator
@@ -14,7 +15,7 @@ def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 
 def translt(text, lng, ee):
-    s = ee.get(1.0, 'end-1c')
+    s = ee.get('1.0', 'end-1c')
     b = s
     try:
         b = Translator().translate(text, src="en", dest=lng).text
@@ -29,35 +30,19 @@ def translt(text, lng, ee):
                 yy += str(i) + ', '
             messagebox.showinfo(title="Languages array", message=yy)
     ee.delete('1.0', END)
-    ee.insert(1.0, b)
-
-
-# def update_all(add_num=0):
-#     global strings
-#     global index_tr
-#     index_tr = clamp(index_tr, 0, len(strings) - 1)
-#     l.config(text=strings[index_tr][0] + ": ")
-#     l2.config(text=strings_prew[index_tr][1])
-#     strings[index_tr + add_num][1] = e.get()
-#     e.delete(0, END)
-#     e.insert(0, strings[index_tr][1])
-
-
-def print_array(a):
-    for i in range(len(a)):
-        print(a[i])
+    ee.insert('1.0', b)
 
 
 def save():
     # update_all()
     if not isJson:
-        file = f'# Translated with Mods Translator\n'
+        file = u'# Translated with Mods Translator\n'
         for i in range(len(strings_save)):
-            file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
+            file += strings_save[i][0] + u"=" + strings_save[i][1] + '\n'
         new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".lang",
                                  filetypes=[("Lang files", "*.lang")])
     else:
-        file = ''
+        file = u''
         d = {}
         for i in strings_save:
             d.update({i[0]: i[1]})
@@ -65,7 +50,7 @@ def save():
         new_file = asksaveasfile(title="Save mod .lang\.json file", defaultextension=".json",
                                  filetypes=[("Json files", "*.json")])
     if new_file:
-        new_file.write(file)
+        new_file.write(file.encode('utf8').decode("unicode_escape"))
         new_file.close()
 
 
@@ -73,17 +58,17 @@ def save_to_clipboard():
     # update_all()
 
     if not isJson:
-        file = f'# Translated with Mods Translator\n'
+        file = u'# Translated with Mods Translator\n'
         for i in range(len(strings_save)):
-            file += strings_save[i][0] + "=" + strings_save[i][1] + '\n'
+            file += strings_save[i][0] + u"=" + strings_save[i][1] + '\n'
     else:
-        file = ''
+        file = u''
         d = {}
         for i in strings_save:
             d.update({i[0]: i[1]})
         file = json.dumps(d, indent=2)
     win.clipboard_clear()
-    win.clipboard_append(file)
+    win.clipboard_append(file.encode('utf8').decode("unicode_escape"))
 
 
 def op():
@@ -147,10 +132,13 @@ def op():
     else:
         result = json.loads(ff)
         for i in result:
-            s = [i, result[i]]
-            strings.append(s)
-            strings_prew.append(s)
-            strings_save.append(s)
+            strings.append([i, result[i]])
+        result1 = json.loads(ff)
+        for i in result:
+            strings_save.append([i, result[i]])
+        result2 = json.loads(ff)
+        for i in result:
+            strings_prew.append([i, result[i]])
 
 
 index_tr = 0
@@ -163,6 +151,7 @@ win.iconphoto(False, photo)
 win.title("Minecraft Mods Translator")
 win.config(bg='#383838')
 win.resizable(False, False)
+ifont = Font(family='Raavi', size=9)
 
 
 def make_menu(w):
@@ -187,35 +176,17 @@ def show_menu(e):
     the_menu.tk.call("tk_popup", the_menu, e.x_root, e.y_root)
 
 
-def dele(e):
-    global l2
-    l2['text'] = ''
-    e.delete(0, END)
-
-
-def next_s():
-    global index_tr
-    index_tr += 1
-    # update_all(add_num=-1)
-
-
-def prew_s():
-    global index_tr
-    index_tr -= 1
-    # update_all(add_num=1)
-
-
-def save_to_str_s(a, ee, l):
+def save_to_str_s(a, ee, gl):
     strings_save[a][1] = ee.get()
     ee.config(bg='green')
-    l.config(text=ee.get())
+    gl.config(text=ee.get())
 
 
-def save_to_str_w2(a, ee, l2, e):
+def save_to_str_w2(a, ee, l82, ev):
     strings_save[a][1] = ee.get("1.0", "end-1c")
-    e.delete(0, END)
-    e.insert(0, strings_save[a][1])
-    l2.config(text=strings_save[a][1])
+    ev.delete(0, END)
+    ev.insert(0, ee.get("1.0", "end-1c"))
+    l82.config(text=ee.get("1.0", "end-1c"))
 
 
 def clear():
@@ -226,9 +197,11 @@ def clear():
 def redactCopy(win2, a=int):
     win2.clipboard_clear()
     win2.clipboard_append(strings[a][1])
+    print(strings)
+    print(strings_save)
 
 
-def redact(l2, e, a=int):
+def redact(l2, ef, a=int):
     win2 = Tk()
     w2 = 600
     h2 = 400
@@ -237,18 +210,19 @@ def redact(l2, e, a=int):
     win2.config(bg='#383838')
     win2.resizable(False, False)
     canvas2 = Canvas(win2, height=win2.winfo_height(), width=win2.winfo_width())
-    textEditor = Text(canvas2)
+    textEditor = Text(canvas2, font=ifont)
     textEditor.insert(1.0, strings_save[a][1])
     textEditor.bind_class("Text", "<Button-3><ButtonRelease-3>", show_menu)
     bgrid = Frame(win2, bg='#383838')
-    l22 = Button(bgrid, text="Copy original", command=lambda win2=win2, a=a: redactCopy(win2, a), anchor="w")
+    l22 = Button(bgrid, text="Copy original", command=lambda win2=win2, a=a: redactCopy(win2, a), anchor="w",
+                 font=ifont)
     b22 = Button(bgrid, text="Save",
-                 command=lambda a=a, textEditor=textEditor, l2=l2, e=e: save_to_str_w2(a, textEditor, l2, e),
-                 anchor="w")
+                 command=lambda a=a, textEditor=textEditor, l2=l2, e=e: save_to_str_w2(a, textEditor, l2, ef),
+                 anchor="w", font=ifont)
     b21 = Button(bgrid,
                  text='Try Google Translate',
                  command=lambda e=e: translt(textEditor.get(1.0, 'end-1c'), e2.get(), textEditor),
-                 anchor="w"
+                 anchor="w", font=ifont
                  )
     textEditor.pack()
     l22.grid(column=0, row=0)
@@ -256,24 +230,18 @@ def redact(l2, e, a=int):
     b21.grid(column=2, row=0)
     bgrid.pack(fill=X)
     canvas2.pack()
+    print(strings)
+    print(strings_save)
 
 
 def StringVarCallback(ee, sv, a):
-    if sv.get() != strings[a][1]:
+    if sv.get() == strings_save[a][1]:
+        ee.config(bg='green')
+    elif sv.get() != strings[a][1]:
         ee.config(bg='red')
     else:
         ee.config(bg='blue')
-    if sv.get() == strings_save[a][1]:
-        ee.config(bg='green')
 
-
-isJson = True
-strings_prew = [["ghn", 'fgh'], ["yuiuyiyui", '1'], ["i;ujlk", '4519'], ["lofr",
-                                                                         'The Lord of the Rings is an epic novel by the English writer J. R. R. Tolkien, one of the most famous works of the fantasy genre. The Lord of the Rings was written as a single book, but because of its length, it was divided into three parts when first published - The Fellowship of the Ring, The Two Towers, and The Return of the King. It is published as a trilogy to this day, although often in a single volume. The novel is considered the first work of the epic fantasy genre, as well as its classics.']]
-strings = [["ghn", 'fgh'], ["yuiuyiyui", '1'], ["i;ujlk", '4519'], ["lofr",
-                                                                    'The Lord of the Rings is an epic novel by the English writer J. R. R. Tolkien, one of the most famous works of the fantasy genre. The Lord of the Rings was written as a single book, but because of its length, it was divided into three parts when first published - The Fellowship of the Ring, The Two Towers, and The Return of the King. It is published as a trilogy to this day, although often in a single volume. The novel is considered the first work of the epic fantasy genre, as well as its classics.']]
-strings_save = [["ghn", 'fgh'], ["yuiuyiyui", '1'], ["i;ujlk", '4519'], ["lofr",
-                                                                         'The Lord of the Rings is an epic novel by the English writer J. R. R. Tolkien, one of the most famous works of the fantasy genre. The Lord of the Rings was written as a single book, but because of its length, it was divided into three parts when first published - The Fellowship of the Ring, The Two Towers, and The Return of the King. It is published as a trilogy to this day, although often in a single volume. The novel is considered the first work of the epic fantasy genre, as well as its classics.']]
 
 make_menu(win)
 canvas = Canvas(win, height=win.winfo_height(), width=win.winfo_width())
@@ -299,10 +267,10 @@ for i in range(len(strings)):
     e = Entry(second_frame, bg='blue')
     sv.trace("w", lambda name, index, mode, i=i, e=e, sv=sv: StringVarCallback(e, sv, i))
     e.config(textvariable=sv)
-    l = Label(second_frame, text=strings[i][0] + ": ", justify=LEFT, anchor="w", width=13)
+    l = Label(second_frame, text=strings[i][0] + ": ", justify=LEFT, anchor="w", width=13, font=ifont)
     l2 = Button(second_frame, text=strings[i][1], justify=LEFT, width=50,
-                anchor="w")
-    l2.config(command=lambda i=i, l2=l2, e=e: redact(l2, e, i))
+                anchor="w", font=ifont)
+    l2.config(command=lambda l2=l2, e=e, i=i: redact(l2, e, i))
     l.grid(row=2 + i, column=0, stick="we")
     l2.grid(row=2 + i, column=1, stick="we")
     b6 = Button(second_frame,
@@ -310,7 +278,7 @@ for i in range(len(strings)):
                 command=lambda i=i, e=e, l2=l2: save_to_str_s(i, e, l2),
                 justify=LEFT,
                 wraplength=max(w - 200, 200),
-                anchor="w"
+                anchor="w", font=ifont
                 )
     e.delete(0, END)
     e.insert(0, strings[i][1])
@@ -324,17 +292,16 @@ e2 = Entry(frame)
 
 b4 = Button(frame,
             text='Save',
-            command=save
+            command=save, font=ifont
             )
 
 b7 = Button(frame,
             text='Add all text to clipboard',
             command=save_to_clipboard,
             justify=LEFT,
-            wraplength=max(w - 200, 200)
+            wraplength=max(w - 200, 200), font=ifont
             )
-strings[index_tr][1] = e.get()
-ll = Label(frame, text='Language:', anchor='w')
+ll = Label(frame, text='Language:', anchor='w', font=ifont)
 ll.grid(row=0, column=0, stick="we")
 e2.grid(row=0, column=1, stick="we")
 b4.grid(row=0, column=2, stick="we")
