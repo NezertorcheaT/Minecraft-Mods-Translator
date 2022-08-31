@@ -39,8 +39,8 @@ def save():
                                   icon='error', title="Select file type")
     if not isJsonp:
         file = '# Translated with Mods Translator\n'
-        for i in range(len(strings_save)):
-            file += strings_save[i][0] + u"=" + strings_save[i][1] + '\n'
+        for i in strings_save:
+            file += i[0] + u"=" + re.sub('\n', '', i[1]) + '\n'
         new_file = asksaveasfilename(title="Save mod .lang\.json file", defaultextension=".lang",
                                      filetypes=[("Lang files", "*.lang")])
     else:
@@ -48,7 +48,7 @@ def save():
         d = {}
         d.update({"_comment": 'Translated with Mods Translator'})
         for i in strings_save:
-            d.update({i[0]: i[1]})
+            d.update({i[0]: re.sub('"', '\"', i[1])})
         file = json.dumps(d, indent=2)
         new_file = asksaveasfilename(title="Save mod .lang\.json file", defaultextension=".json",
                                      filetypes=[("Json files", "*.json")])
@@ -150,11 +150,11 @@ def op():
 
 index_tr = 0
 win = Tk()
-photo = PhotoImage(file=r'D:\BeckUP\Backgrounds\YouTube\ikon5 - копия.png')
+#photo = PhotoImage(file=r'D:\BeckUP\Backgrounds\YouTube\ikon5 - копия.png')
 w = 640
 h = 300
 win.geometry(f"{w}x{h}")
-win.iconphoto(False, photo)
+#win.iconphoto(False, photo)
 win.title("Minecraft Mods Translator")
 win.config(bg='#383838')
 win.resizable(False, False)
